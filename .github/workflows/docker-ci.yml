@@ -40,6 +40,12 @@ jobs:
       - name: Launch Web Service
         run: docker compose up -d
 
+      - name: Wait for Container Health
+        run: until [ "$(docker inspect --format='{{json .State.Health.Status}}' web)" == "\"healthy\"" ]; do sleep 1; done
+
+      - name: Extra Delay for Web Server Stabilization
+        run: sleep 5
+
       - name: Make wait-for-webserver.sh Executable
         run: chmod +x wait-for-webserver.sh
 
